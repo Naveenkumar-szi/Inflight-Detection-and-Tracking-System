@@ -101,23 +101,3 @@ Actions are decided based on which zone the object centroid falls into.
 
 ---
 
-## Future Work
-
-* Multi-object tracking
-* Reinforcement learning for adaptive servo control
-* Improved drone detection dataset for higher robustness
-
----
-
-## License
-
-This project is licensed under the MIT License.
-
-```
-
----
-
-If you want, I can also **add badges, setup instructions, and example output screenshots** to make this README **more professional and GitHub-ready**.  
-
-Do you want me to do that next?
-```
