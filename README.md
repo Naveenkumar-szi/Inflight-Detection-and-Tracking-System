@@ -1,112 +1,124 @@
-# Inflight Detection and Tracking System
+Here’s a clean **README.md** content for your project in Markdown format, aligned with your Python + Arduino system:
 
-## Introduction
+# Real-Time Drone and Human Detection with Obstacle Avoidance
 
-The Inflight Detection and Tracking System is an advanced solution designed to monitor, detect, and track objects or entities in real-time during inflight operations. The project leverages computer vision, machine learning, and real-time data processing techniques to provide accurate tracking and detection outcomes, which are essential for aviation safety, research, and automated monitoring tasks.
+## Description
+This project implements a **real-time computer vision system** for detecting drones and humans, integrated with **ultrasonic sensing** and **Arduino-controlled servo actuation**. The system can:
 
-## Features
+- **Follow drones** for monitoring purposes.
+- **Avoid humans** for safety and privacy considerations.
 
-- Real-time inflight object detection and tracking.
-- Integration with computer vision models for high-accuracy results.
-- Modular architecture for easy expansion and customization.
-- Support for various input sources, including live video feeds and pre-recorded footage.
-- Visualization tools for tracking outputs and detection overlays.
-- Logging and reporting of tracked objects for further analysis.
-
-## Requirements
-
-To use and develop the Inflight Detection and Tracking System, ensure you have the following:
-
-- Python 3.7 or above
-- OpenCV (cv2)
-- NumPy
-- TensorFlow or PyTorch (based on the chosen model)
-- Additional Python packages as listed in `requirements.txt`
-- GPU (optional, but recommended for real-time performance)
-- Supported operating systems: Windows, Linux, or macOS
-
-## Installation
-
-Follow these steps to install the Inflight Detection and Tracking System on your local machine:
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/Naveenkumar-szi/Inflight-Detection-and-Tracking-System.git
-   cd Inflight-Detection-and-Tracking-System
-   ```
-
-2. Install the required Python packages:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-   Alternatively, you can use your preferred package manager:
-
-   ```packagemanagers
-   {
-       "commands": {
-           "npm": "npm install <package-name>",
-           "yarn": "yarn add <package-name>",
-           "pnpm": "pnpm add <package-name>",
-           "bun": "bun add <package-name>"
-       }
-   }
-   ```
-
-3. Download and prepare the necessary model weights as described in the Configuration section.
-
-## Usage
-
-You can run the Inflight Detection and Tracking System with the provided scripts. Below is a typical use case:
-
-1. Prepare your video input source or connect a camera device.
-2. Run the main detection and tracking script:
-
-   ```bash
-   python main.py --input /path/to/video.mp4 --output /path/to/result.mp4 --model /path/to/model.weights
-   ```
-
-   - `--input`: Path to video or camera index (0 for default webcam)
-   - `--output`: Path for saving the output video with overlays
-   - `--model`: Path to the pre-trained model weights
-
-3. View the output video or real-time window with detection overlays.
-
-### Example
-
-```bash
-python main.py --input sample_flight.mp4 --output tracked_output.mp4 --model yolov5s.pt
-```
-
-## Configuration
-
-Configure the system for your specific use case by modifying the provided configuration files or command-line arguments.
-
-- **Model Selection**: Choose a compatible detection model (e.g., YOLO, SSD, custom models) and specify the path to its weights.
-- **Thresholds**: Adjust detection confidence and tracking thresholds in the config file or via CLI.
-- **Logging**: Set output directories for logs and result files.
-- **Runtime Options**: Enable GPU acceleration, set batch size, or adjust frame skipping for performance tuning.
-- **Visualization**: Enable or disable real-time visualization and customize overlay appearance.
-
-### Sample Configuration
-
-```json
-{
-    "model": "yolov5s.pt",
-    "confidence_threshold": 0.4,
-    "nms_threshold": 0.5,
-    "input_source": "camera",
-    "output_path": "output/tracking.mp4",
-    "log_path": "logs/inflight.log",
-    "visualize": true,
-    "use_gpu": true
-}
-```
-
-Edit the configuration file or pass parameters via the command line as needed.
+It uses YOLOv8 for object detection and zone-based logic for obstacle avoidance actions.
 
 ---
 
-For more details, refer to the code comments and documentation within each module. The Inflight Detection and Tracking System is designed with extensibility in mind, making it suitable for research and operational deployment in aviation and surveillance domains.
+## Features
+- Real-time detection using YOLOv8 (`dronehuman.pt`)
+- Distance measurement via HC-SR04 ultrasonic sensor
+- Arduino-controlled servo actuation (PCA9685 driver)
+- Zone-based decision making: **Center, Left, Right, Top, Bottom**
+- Action modes:
+  - `F` = Follow (drones)
+  - `A` = Avoid (humans)
+- Displays object distance and estimated size (width, height in cm)
+- FPS display for performance monitoring
+
+---
+
+## Requirements
+
+### Python Dependencies
+- Python 3.9+
+- OpenCV (`opencv-python`)
+- Ultralytics YOLO (`ultralytics`)
+- NumPy (`numpy`)
+- pySerial (`pyserial`)
+
+Install dependencies via pip:
+
+```bash
+pip install opencv-python ultralytics numpy pyserial
+````
+
+### Hardware
+
+* Arduino with PCA9685 servo driver
+* Servos for directional control
+* HC-SR04 ultrasonic sensor
+* Optional: mid-tier GPU for real-time YOLO inference
+
+---
+
+## Usage
+
+1. Connect the Arduino and ensure the **COM port** matches `Config.ARDUINO_PORT`.
+2. Upload the `ardiunofile.ino` to your Arduino.
+3. Place the `dronehuman.pt` YOLOv8 model in the project directory.
+4. Run the Python script:
+
+```bash
+python main.py
+```
+
+5. Press `q` to quit the program.
+6. The system will automatically send **Follow (F)** or **Avoid (A)** commands to Arduino based on detected objects and zones.
+
+---
+
+## File Structure
+
+```
+project/
+├─ main.py             # Python detection and control script
+├─ ardiunofile.ino     # Arduino servo and ultrasonic code
+├─ dronehuman.pt       # YOLOv8 model for drone and human detection
+├─ README.md           # Project documentation
+└─ assets/             # Optional images, flowcharts, or diagrams
+```
+
+---
+
+## Zones
+
+The frame is divided into five zones for directional control:
+
+* **Center (C)**
+* **Left (L)**
+* **Right (R)**
+* **Top (T)**
+* **Bottom (B)**
+
+Actions are decided based on which zone the object centroid falls into.
+
+---
+
+## References
+
+1. [YOLOv8 Documentation - Ultralytics](https://docs.ultralytics.com)
+2. Redmon, J., & Farhadi, A. (2018). *YOLOv3: An Incremental Improvement*. arXiv:1804.02767.
+3. [Arduino Documentation](https://docs.arduino.cc)
+4. [Adafruit PCA9685 PWM Driver](https://learn.adafruit.com/16-channel-pwm-servo-driver)
+5. [HC-SR04 Ultrasonic Sensor Specs](https://www.sparkfun.com/products/15569)
+
+---
+
+## Future Work
+
+* Multi-object tracking
+* Reinforcement learning for adaptive servo control
+* Improved drone detection dataset for higher robustness
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+```
+
+---
+
+If you want, I can also **add badges, setup instructions, and example output screenshots** to make this README **more professional and GitHub-ready**.  
+
+Do you want me to do that next?
+```
