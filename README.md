@@ -1,4 +1,3 @@
-Here’s a clean **README.md** content for your project in Markdown format, aligned with your Python + Arduino system:
 
 # Real-Time Drone and Human Detection with Obstacle Avoidance
 
